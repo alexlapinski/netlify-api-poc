@@ -1,2 +1,7 @@
+# Env Files
+.env
+.env.*
+!.env.sample
+
 # Local Netlify folder
 .netlify
