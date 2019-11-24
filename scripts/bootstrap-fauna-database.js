@@ -2,10 +2,20 @@ const faunadb = require('faunadb');
 const chalk = require('chalk');
 const q = faunadb.query;
 
+const getFaunaConfig = () => {
+    if (process.env.NODE_ENV !== 'production') {
+        require('dotenv').config();
+    }
+
+    return {
+        secretKey: process.env.FAUNADB_SERVER_SECRET,
+    };
+};
+
 const insideNetlifyBuildContext = () => 
     process.env.DEPLOY_PRIME_URL !== undefined ? true : false;
 
-const createTable = (client, name) =>
+const createCollection = (client, name) =>
     client.query(
         q.Create(
             q.Ref('classes'),
@@ -13,13 +23,13 @@ const createTable = (client, name) =>
         )
     );
 
-const createIndex = (client, tableName, indexName) =>
+const createCollectionIndex = (client, collectionName, indexName) =>
     client.query(
         q.Create(
             q.Ref('indexes'),
             {
                 name: indexName,
-                source: q.Ref(`classes/${tableName}`),
+                source: q.Ref(`classes/${collectionName}`),
             }
         )
     );
@@ -28,8 +38,8 @@ const createDatabase = (faunaDbSecret) => {
     console.log('Creating the database schema');
     const client = new faunadb.Client({ secret: faunaDbSecret });
     
-    return createTable(client, 'todos')
-        .then(() => createIndex(client, 'todos', 'all_todos'))
+    return createCollection(client, 'todos')
+        .then(() => createCollectionIndex(client, 'todos', 'all_todos'))
         .catch(error => {
             if (error.requestResults.statusCode === 400 && error.message === 'instance not unique') {
                 // Database already exists
@@ -45,8 +55,8 @@ const main = () => {
 
     console.log(chalk.cyan('Creating FaunaDB Database...'));
 
-    const faunaDbSecret = process.env.FAUNADB_SERVER_SECRET;
-    if (!faunaDbSecret) {
+    const faunaDbConfig = getFaunaConfig();
+    if (!faunaDbConfig.secretKey) {
         console.log(chalk.yellow('Required FAUNADB_SERVER_SECRET not defined.'));
         console.log(`Make sure you have created your Fauna database with "${chalk.underline('netlify addons:create fauna')}"`);
         console.log('THen run "npm run bootstrap" to setup the fauna database schema');
@@ -58,7 +68,7 @@ const main = () => {
 
     } 
     
-    return createDatabase(faunaDbSecret)
+    return createDatabase(faunaDbConfig.secretKey)
         .then(() => {
             console.log(chalk.green('Fauna Database schema has been created'));
             console.log(`Claim your fauna database with "${chalk.underline('netlify addons:auth fauna')}"`);
