@@ -32,7 +32,7 @@ export default class App extends Component {
 
       console.log('all todos', todos);
       this.setState({
-        todos: todos
+        todos: todos,
       });
     });
   }
@@ -58,13 +58,13 @@ export default class App extends Component {
     // Optimistically add todo to UI
     const newTodoArray = [{
       data: todoInfo,
-      ts: new Date().getTime() * 10000
+      ts: new Date().getTime() * 10000,
     }];
 
     const optimisticTodoState = newTodoArray.concat(todos);
 
     this.setState({
-      todos: optimisticTodoState
+      todos: optimisticTodoState,
     });
     // Make API request to create new todo
     api.create(todoInfo).then((response) => {
@@ -73,14 +73,14 @@ export default class App extends Component {
       const persistedState = removeOptimisticTodo(todos).concat(response);
       // Set persisted value to state
       this.setState({
-        todos: persistedState
+        todos: persistedState,
       });
     }).catch((e) => {
       console.log('An API error occurred', e);
       const revertedState = removeOptimisticTodo(todos);
       // Reset to original state
       this.setState({
-        todos: revertedState
+        todos: revertedState,
       });
     });
   }
@@ -102,11 +102,11 @@ export default class App extends Component {
       return acc;
     }, {
       rollbackTodo: {},
-      optimisticState: []
+      optimisticState: [],
     });
 
     this.setState({
-      todos: filteredTodos.optimisticState
+      todos: filteredTodos.optimisticState,
     });
 
     // Make API request to delete todo
@@ -116,7 +116,7 @@ export default class App extends Component {
       console.log(`There was an error removing ${todoId}`, e);
       // Add item removed back to list
       this.setState({
-        todos: filteredTodos.optimisticState.concat(filteredTodos.rollbackTodo)
+        todos: filteredTodos.optimisticState.concat(filteredTodos.rollbackTodo),
       });
     });
   }
@@ -137,10 +137,10 @@ export default class App extends Component {
     });
 
     this.setState({
-      todos: updatedTodos
+      todos: updatedTodos,
     }, () => {
       api.update(todoId, {
-        completed: todoCompleted
+        completed: todoCompleted,
       }).then(() => {
         console.log(`update todo ${todoId}`, todoCompleted);
       }).catch((e) => {
@@ -165,10 +165,10 @@ export default class App extends Component {
     // only set state if input different
     if (isDifferent) {
       this.setState({
-        todos: updatedTodos
+        todos: updatedTodos,
       }, () => {
         api.update(todoId, {
-          title: currentValue
+          title: currentValue,
         }).then(() => {
           console.log(`update todo ${todoId}`, currentValue);
         }).catch((e) => {
@@ -193,7 +193,7 @@ export default class App extends Component {
       return acc;
     }, {
       completedTodoIds: [],
-      optimisticState: []
+      optimisticState: [],
     });
 
     // only set state if completed todos exist
@@ -204,7 +204,7 @@ export default class App extends Component {
     }
 
     this.setState({
-      todos: data.optimisticState
+      todos: data.optimisticState,
     }, () => {
       setTimeout(() => {
         this.closeModal();
@@ -220,13 +220,13 @@ export default class App extends Component {
 
   closeModal() {
     this.setState({
-      showMenu: false
+      showMenu: false,
     });
   }
 
   openModal() {
     this.setState({
-      showMenu: true
+      showMenu: true,
     });
   }
 

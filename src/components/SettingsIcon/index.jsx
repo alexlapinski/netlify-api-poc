@@ -16,6 +16,6 @@ const SettingIcon = createReactClass({
         </svg>
       </span>
     );
-  }
+  },
 });
 export default SettingIcon;
