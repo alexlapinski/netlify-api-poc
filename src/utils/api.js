@@ -5,32 +5,32 @@ const create = (data) => {
     body: JSON.stringify(data),
     method: 'POST'
   }).then(response => {
-    return response.json()
-  })
-}
+    return response.json();
+  });
+};
 
 const readAll = () => {
   return fetch('/.netlify/functions/todos-read-all').then((response) => {
-    return response.json()
-  })
-}
+    return response.json();
+  });
+};
 
 const update = (todoId, data) => {
   return fetch(`/.netlify/functions/todos-update/${todoId}`, {
     body: JSON.stringify(data),
     method: 'POST'
   }).then(response => {
-    return response.json()
-  })
-}
+    return response.json();
+  });
+};
 
 const deleteTodo = (todoId) => {
   return fetch(`/.netlify/functions/todos-delete/${todoId}`, {
     method: 'POST',
   }).then(response => {
-    return response.json()
-  })
-}
+    return response.json();
+  });
+};
 
 const batchDeleteTodo = (todoIds) => {
   return fetch(`/.netlify/functions/todos-delete-batch`, {
@@ -39,9 +39,9 @@ const batchDeleteTodo = (todoIds) => {
     }),
     method: 'POST'
   }).then(response => {
-    return response.json()
-  })
-}
+    return response.json();
+  });
+};
 
 export default {
   create: create,
@@ -49,4 +49,4 @@ export default {
   update: update,
   delete: deleteTodo,
   batchDelete: batchDeleteTodo
-}
+};

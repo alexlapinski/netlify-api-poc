@@ -1,6 +1,14 @@
 module.exports = {
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended",
     ],
+    "parserOptions": {
+        "ecmaVersion": 6,
+    },
+    "env": {
+        "es6": true,
+    },
+    "rules": {
+        "semi": ["error", "always"],
+    },
 };

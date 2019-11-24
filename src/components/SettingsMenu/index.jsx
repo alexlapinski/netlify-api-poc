@@ -1,31 +1,32 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styles from './SettingsMenu.css' // eslint-disable-line
 
-export default class Menu extends Component {
+class Menu extends Component {
   componentDidMount() {
     // attach event listeners
-    document.body.addEventListener('keydown', this.handleEscKey)
+    document.body.addEventListener('keydown', this.handleEscKey);
   }
   componentWillUnmount() {
     // remove event listeners
-    document.body.removeEventListener('keydown', this.handleEscKey)
+    document.body.removeEventListener('keydown', this.handleEscKey);
   }
-  handleEscKey = (e) => {
+  handleEscKey(e) {
     if (this.props.showMenu && e.which === 27) {
-      this.props.handleModalClose()
+      this.props.handleModalClose();
     }
   }
-  handleDelete = (e) => {
-    e.preventDefault()
+  handleDelete(e) {
+    e.preventDefault();
     const deleteConfirm = window.confirm("Are you sure you want to clear all completed todos?");
     if (deleteConfirm) {
-      console.log('delete')
-      this.props.handleClearCompleted()
+      console.log('delete');
+      this.props.handleClearCompleted();
     }
   }
   render() {
-    const { showMenu } = this.props
-    const showOrHide = (showMenu) ? 'flex' : 'none'
+    const { showMenu } = this.props;
+    const showOrHide = (showMenu) ? 'flex' : 'none';
     return (
       <div className='settings-wrapper' style={{display: showOrHide}}>
         <div className='settings-content'>
@@ -57,6 +58,14 @@ export default class Menu extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
+
+Menu.propTypes = {
+  showMenu: PropTypes.bool,
+  handleModalClose: PropTypes.func,
+  handleClearCompleted: PropTypes.func,
+};
+
+export default Menu;
