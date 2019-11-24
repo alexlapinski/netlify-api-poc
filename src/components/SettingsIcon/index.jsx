@@ -1,6 +1,6 @@
 import React, { createReactClass } from 'react';
 import PropTypes from 'prop-types';
-import styles from './SettingIcon.css' // eslint-disable-line
+import styles from './SettingsIcon.css' // eslint-disable-line
 
 const SettingIcon = createReactClass({
   propTypes: {

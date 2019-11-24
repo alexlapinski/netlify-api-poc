@@ -1,30 +1,35 @@
 const faunadb = require('faunadb');
 const chalk = require('chalk');
+const q = faunadb.query;
 
 const insideNetlifyBuildContext = () => 
     process.env.DEPLOY_PRIME_URL !== undefined ? true : false;
 
+const createTable = (client, name) =>
+    client.query(
+        q.Create(
+            q.Ref('classes'),
+            { name }
+        )
+    );
+
+const createIndex = (client, tableName, indexName) =>
+    client.query(
+        q.Create(
+            q.Ref('indexes'),
+            {
+                name: indexName,
+                source: q.Ref(`classes/${tableName}`),
+            }
+        )
+    );
+
 const createDatabase = (faunaDbSecret) => {
     console.log('Creating the database schema');
     const client = new faunadb.Client({ secret: faunaDbSecret });
-    const q = faunadb.query;
-    return client.query(
-        q.Create(
-            q.Ref('classes'),
-            { name: 'todos' }
-        )
-    )
-        .then(() =>
-            client.query(
-                q.Create(
-                    q.Ref('indexes'),
-                    {
-                        name: 'all_todos',
-                        source: q.Ref('classes/todos'),
-                    },
-                ),
-            ),
-        )
+    
+    return createTable(client, 'todos')
+        .then(() => createIndex(client, 'todos', 'all_todos'))
         .catch(error => {
             if (error.requestResults.statusCode === 400 && error.message === 'instance not unique') {
                 // Database already exists
@@ -32,7 +37,7 @@ const createDatabase = (faunaDbSecret) => {
                 console.log(`Claim your fauna database with "${chalk.underline('netlify addons:auth fauna')}"`);
                 throw error;
             }
-        })
+        });
 };
 
 const main = () => {
@@ -68,7 +73,7 @@ if (require.main === module) {
             process.exit(0);
         })
         .catch(e => {
-            console.error(`Error: ${e.message}`);
+            console.error(chalk.red(`Error: ${e.message}`));
             process.exit(1);
-        })
+        });
 }
