@@ -41,7 +41,7 @@ const createDatabase = (faunaDbSecret) => {
     return createCollection(client, 'todos')
         .then(() => createCollectionIndex(client, 'todos', 'all_todos'))
         .catch(error => {
-            if (error.requestResults.statusCode === 400 && error.message === 'instance not unique') {
+            if (error.requestResult.statusCode === 400 && error.message === 'instance not unique') {
                 // Database already exists
                 console.log('Fauna already setup, you\'re good to go');
                 console.log(`Claim your fauna database with "${chalk.underline('netlify addons:auth fauna')}"`);
@@ -84,6 +84,7 @@ if (require.main === module) {
         })
         .catch(e => {
             console.error(chalk.red(`Error: ${e.message}`));
+            console.error(chalk.red(JSON.stringify(e)));
             process.exit(1);
         });
 }
