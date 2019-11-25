@@ -1,21 +1,28 @@
-import React, { createReactClass } from 'react';
+import React from 'react';
+import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import styles from './SettingsIcon.css' // eslint-disable-line
 
-const SettingIcon = createReactClass({
-  propTypes: {
-    className: PropTypes.string,
-    onClick: PropTypes.func,
-  },
-  render: (props) => {
-    const className = props.className || '';
+class SettingsIcon extends React.Component {
+  constructor(props) { 
+    super(props); 
+  }
+  
+  render() {
+    const className = R.defaultTo('', R.prop('className', this.props));
     return (
-      <span onClick={props.onClick} className={`setting-toggle-wrapper ${className}`}>
+      <span onClick={this.props.onClick} className={`setting-toggle-wrapper ${className}`}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 125" className="settings-toggle">
           <use xlinkHref="#settings" className="settings-gear"></use>
         </svg>
       </span>
     );
-  },
-});
-export default SettingIcon;
+  }
+}
+
+SettingsIcon.propTypes = {
+  className: PropTypes.string,
+  onClick: PropTypes.func,
+};
+
+export default SettingsIcon;

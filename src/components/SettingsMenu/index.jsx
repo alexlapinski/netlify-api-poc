@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import styles from './SettingsMenu.css' // eslint-disable-line
 
 class Menu extends Component {
+  constructor(props) {
+    super(props);
+  }
   componentDidMount() {
     // attach event listeners
     document.body.addEventListener('keydown', this.handleEscKey);
@@ -25,12 +29,15 @@ class Menu extends Component {
     }
   }
   render() {
-    const { showMenu } = this.props;
+    const showMenu = R.defaultTo(false, R.prop('showMenu', this.props));
     const showOrHide = (showMenu) ? 'flex' : 'none';
     return (
       <div className='settings-wrapper' style={{display: showOrHide}}>
         <div className='settings-content'>
-          <span className='settings-close' onClick={this.props.handleModalClose} role="img" aria-label='close'>
+          <span className='settings-close' 
+                onClick={this.props.handleModalClose} 
+                role="img" 
+                aria-label='close'>
             ❌
           </span>
           <h2>Settings</h2>
